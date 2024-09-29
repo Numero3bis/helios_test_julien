@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:helios_flutter_julien/components/user_tile.component.dart';
 import 'package:helios_flutter_julien/models/user.model.dart';
 import 'package:http/http.dart' as http;
 
@@ -49,7 +50,8 @@ class _ListScreenState extends State<ListScreen> {
                 shrinkWrap: true,
                 itemCount: _userList.length,
                 itemBuilder: (context, index) {
-                  return Text(_userList[index].firstName);
+                  return UserTileComponent(
+                      user: _userList[index], index: index);
                 }),
           )
         ],
