@@ -19,7 +19,7 @@ class _ListScreenState extends State<ListScreen> {
   int _pageNumber = 0;
   bool _isFetching = false;
   bool _hasUserLeft = true;
-  ScrollController _scrollController = new ScrollController();
+  final ScrollController _scrollController = ScrollController();
 
   @override
   Widget build(BuildContext context) {
@@ -33,7 +33,9 @@ class _ListScreenState extends State<ListScreen> {
     super.initState();
     _scrollController.addListener(() {
       if (_scrollController.position.pixels ==
-          _scrollController.position.maxScrollExtent) {
+              _scrollController.position.maxScrollExtent &&
+          _hasUserLeft == true &&
+          _isFetching == false) {
         _fetchData();
       }
     });
@@ -99,6 +101,7 @@ class _ListScreenState extends State<ListScreen> {
     List<User> users = results.map((user) => User.fromMap(user)).toList();
     _userList.addAll(users);
     setState(() {
+      _hasUserLeft = (users.length != 20) ? false : true;
       _pageNumber = _pageNumber + 1;
       _isFetching = false;
     });
