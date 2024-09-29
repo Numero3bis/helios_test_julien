@@ -12,7 +12,9 @@ class ListScreen extends StatefulWidget {
 }
 
 class _ListScreenState extends State<ListScreen> {
+  final NUMBER_USER_BY_PAGE = 20;
   List<User> _userList = [];
+  int _pageNumber = 0;
   bool _isFetching = false;
   bool _hasUserLeft = true;
   ScrollController _scrollController = new ScrollController();
@@ -59,13 +61,14 @@ class _ListScreenState extends State<ListScreen> {
     setState(() {
       _isFetching = true;
     });
-    var response = await http
-        .get(Uri.parse('https://randomuser.me/api/?page=1&results=100'));
+    var response = await http.get(Uri.parse(
+        'https://randomuser.me/api/?page=${_pageNumber}&results=${NUMBER_USER_BY_PAGE}'));
     var data = json.decode(response.body);
     List<dynamic> results = data['results'];
     List<User> users = results.map((user) => User.fromMap(user)).toList();
     _userList.addAll(users);
     setState(() {
+      _pageNumber = _pageNumber + 1;
       _isFetching = false;
     });
   }
