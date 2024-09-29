@@ -96,14 +96,20 @@ class _ListScreenState extends State<ListScreen> {
     });
     var response = await http.get(Uri.parse(
         'https://randomuser.me/api/?page=${_pageNumber}&results=${NUMBER_USER_BY_PAGE}'));
-    var data = json.decode(response.body);
-    List<dynamic> results = data['results'];
-    List<User> users = results.map((user) => User.fromMap(user)).toList();
-    _userList.addAll(users);
-    setState(() {
-      _hasUserLeft = (users.length != 20) ? false : true;
-      _pageNumber = _pageNumber + 1;
-      _isFetching = false;
-    });
+    if (response.statusCode == 200) {
+      var data = json.decode(response.body);
+      List<dynamic> results = data['results'];
+      List<User> users = results.map((user) => User.fromMap(user)).toList();
+      _userList.addAll(users);
+      setState(() {
+        _hasUserLeft = (users.length != 20) ? false : true;
+        _pageNumber = _pageNumber + 1;
+        _isFetching = false;
+      });
+    } else {
+      setState(() {
+        _isFetching = false;
+      });
+    }
   }
 }
