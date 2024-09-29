@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:helios_flutter_julien/models/user.model.dart';
 import 'package:http/http.dart' as http;
 
 class ListScreen extends StatefulWidget {
@@ -49,6 +50,7 @@ class _ListScreenState extends State<ListScreen> {
         .get(Uri.parse('https://randomuser.me/api/?page=1&results=10'));
     var data = json.decode(response.body);
     List<dynamic> results = data['results'];
-    print(results);
+    User user = User.fromMap(results[0]);
+    print(user);
   }
 }
