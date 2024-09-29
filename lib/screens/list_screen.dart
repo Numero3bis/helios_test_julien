@@ -15,7 +15,10 @@ class ListScreen extends StatefulWidget {
 
 class _ListScreenState extends State<ListScreen> {
   final NUMBER_USER_BY_PAGE = 20;
+
   List<User> _userList = [];
+  List<User> _userListFiltered = [];
+
   int _pageNumber = 0;
   bool _isFetching = false;
   bool _hasUserLeft = true;
@@ -42,6 +45,13 @@ class _ListScreenState extends State<ListScreen> {
     _fetchData();
   }
 
+  @override
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
+
   Widget _body() {
     return SafeArea(
       child: Column(
@@ -53,13 +63,42 @@ class _ListScreenState extends State<ListScreen> {
                   textAlign: TextAlign.center,
                   style: TextStyle(
                       color: Color.fromARGB(250, 250, 235, 21), fontSize: 50))),
+          Container(
+            margin: EdgeInsets.all(5),
+            child: TextField(
+              autofocus: false,
+              onChanged: (value) {
+                if (value == '') {
+                  setState(() {
+                    _userListFiltered = _userList;
+                  });
+                } else {
+                  List<User> filteredUser = _userList
+                      .where((user) =>
+                          user.city.contains(value) ||
+                          user.country.contains(value) ||
+                          user.firstName.contains(value) ||
+                          user.lastName.contains(value) ||
+                          user.crime.contains(value))
+                      .toList();
+                  setState(() {
+                    _userListFiltered = filteredUser;
+                  });
+                }
+              },
+              decoration: InputDecoration(
+                border: OutlineInputBorder(),
+                labelText: 'Search',
+              ),
+            ),
+          ),
           Expanded(
             child: ListView.builder(
                 controller: _scrollController,
                 shrinkWrap: true,
-                itemCount: _userList.length + 1,
+                itemCount: _userListFiltered.length + 1,
                 itemBuilder: (context, index) {
-                  return (index == _userList.length)
+                  return (index == _userListFiltered.length)
                       ? listStatus()
                       : GestureDetector(
                           onTap: () {
@@ -67,12 +106,12 @@ class _ListScreenState extends State<ListScreen> {
                               context,
                               MaterialPageRoute(
                                   builder: (context) => UserScreen(
-                                        user: _userList[index],
+                                        user: _userListFiltered[index],
                                       )),
                             );
                           },
                           child: UserTileComponent(
-                            user: _userList[index],
+                            user: _userListFiltered[index],
                             index: index,
                           ),
                         );
@@ -108,6 +147,7 @@ class _ListScreenState extends State<ListScreen> {
       List<User> users = results.map((user) => User.fromMap(user)).toList();
       _userList.addAll(users);
       setState(() {
+        _userListFiltered = _userList;
         _hasUserLeft = (users.length != 20) ? false : true;
         _pageNumber = _pageNumber + 1;
         _isFetching = false;
