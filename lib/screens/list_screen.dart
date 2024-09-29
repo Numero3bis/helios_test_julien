@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
@@ -16,6 +18,14 @@ class _ListScreenState extends State<ListScreen> {
     );
   }
 
+  @override
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    _fetchData();
+  }
+
   Widget _body() {
     return SafeArea(
       child: Column(
@@ -32,5 +42,13 @@ class _ListScreenState extends State<ListScreen> {
         ],
       ),
     );
+  }
+
+  void _fetchData() async {
+    var response = await http
+        .get(Uri.parse('https://randomuser.me/api/?page=1&results=10'));
+    var data = json.decode(response.body);
+    List<dynamic> results = data['results'];
+    print(results);
   }
 }
