@@ -49,28 +49,43 @@ class _ListScreenState extends State<ListScreen> {
             child: ListView.builder(
                 controller: _scrollController,
                 shrinkWrap: true,
-                itemCount: _userList.length,
+                itemCount: _userList.length + 1,
                 itemBuilder: (context, index) {
-                  return GestureDetector(
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => UserScreen(
-                                  user: _userList[index],
-                                )),
-                      );
-                    },
-                    child: UserTileComponent(
-                      user: _userList[index],
-                      index: index,
-                    ),
-                  );
+                  return (index == _userList.length)
+                      ? listStatus()
+                      : GestureDetector(
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => UserScreen(
+                                        user: _userList[index],
+                                      )),
+                            );
+                          },
+                          child: UserTileComponent(
+                            user: _userList[index],
+                            index: index,
+                          ),
+                        );
                 }),
           )
         ],
       ),
     );
+  }
+
+  Widget listStatus() {
+    if (_isFetching) {
+      return Center(
+          child: Container(
+        margin: const EdgeInsets.only(top: 15, bottom: 50),
+        width: 40.0,
+        height: 40.0,
+        child: const CircularProgressIndicator(),
+      ));
+    }
+    return const Center(child: Text('....No more bad guys to catch'));
   }
 
   void _fetchData() async {
