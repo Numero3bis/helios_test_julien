@@ -6,6 +6,7 @@ class User {
   final String city;
   final String country;
   final String smallPictureUrl;
+  final String largePictureUrl;
   final String crime;
   User(
       {required this.firstName,
@@ -13,6 +14,7 @@ class User {
       required this.city,
       required this.country,
       required this.smallPictureUrl,
+      required this.largePictureUrl,
       required this.crime});
 
   factory User.fromMap(Map<String, dynamic> map) {
@@ -22,6 +24,7 @@ class User {
         city: map['location']['city'] ?? '',
         country: map['location']['country'] ?? '',
         smallPictureUrl: map['picture']['thumbnail'] ?? '',
+        largePictureUrl: map['picture']['large'] ?? '',
         crime: getRandomCrime());
   }
 
