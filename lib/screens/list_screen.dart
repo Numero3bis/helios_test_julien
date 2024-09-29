@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:helios_flutter_julien/components/user_tile.component.dart';
 import 'package:helios_flutter_julien/models/user.model.dart';
+import 'package:helios_flutter_julien/screens/user_screen.dart';
 import 'package:http/http.dart' as http;
 
 class ListScreen extends StatefulWidget {
@@ -50,8 +51,21 @@ class _ListScreenState extends State<ListScreen> {
                 shrinkWrap: true,
                 itemCount: _userList.length,
                 itemBuilder: (context, index) {
-                  return UserTileComponent(
-                      user: _userList[index], index: index);
+                  return GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => UserScreen(
+                                  user: _userList[index],
+                                )),
+                      );
+                    },
+                    child: UserTileComponent(
+                      user: _userList[index],
+                      index: index,
+                    ),
+                  );
                 }),
           )
         ],
