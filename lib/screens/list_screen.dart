@@ -12,6 +12,11 @@ class ListScreen extends StatefulWidget {
 }
 
 class _ListScreenState extends State<ListScreen> {
+  List<User> _userList = [];
+  bool _isFetching = false;
+  bool _hasUserLeft = true;
+  ScrollController _scrollController = new ScrollController();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -20,10 +25,14 @@ class _ListScreenState extends State<ListScreen> {
   }
 
   @override
-  @override
   void initState() {
-    // TODO: implement initState
     super.initState();
+    _scrollController.addListener(() {
+      if (_scrollController.position.pixels ==
+          _scrollController.position.maxScrollExtent) {
+        _fetchData();
+      }
+    });
     _fetchData();
   }
 
@@ -34,10 +43,11 @@ class _ListScreenState extends State<ListScreen> {
           Text('This is a list'),
           Expanded(
             child: ListView.builder(
+                controller: _scrollController,
                 shrinkWrap: true,
-                itemCount: 100,
+                itemCount: _userList.length,
                 itemBuilder: (context, index) {
-                  return Text('This is a tile');
+                  return Text(_userList[index].firstName);
                 }),
           )
         ],
@@ -46,11 +56,17 @@ class _ListScreenState extends State<ListScreen> {
   }
 
   void _fetchData() async {
+    setState(() {
+      _isFetching = true;
+    });
     var response = await http
-        .get(Uri.parse('https://randomuser.me/api/?page=1&results=10'));
+        .get(Uri.parse('https://randomuser.me/api/?page=1&results=100'));
     var data = json.decode(response.body);
     List<dynamic> results = data['results'];
-    User user = User.fromMap(results[0]);
-    print(user);
+    List<User> users = results.map((user) => User.fromMap(user)).toList();
+    _userList.addAll(users);
+    setState(() {
+      _isFetching = false;
+    });
   }
 }
