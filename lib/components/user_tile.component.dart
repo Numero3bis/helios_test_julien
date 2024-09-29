@@ -45,6 +45,12 @@ class UserTileComponent extends StatelessWidget {
             children: [
               Text(user.city),
               if (user.country != '') Text(", ${user.country}"),
+              Expanded(
+                  child: Text(
+                user.crime,
+                overflow: TextOverflow.ellipsis,
+                textAlign: TextAlign.end,
+              ))
             ],
           )
         ])),
