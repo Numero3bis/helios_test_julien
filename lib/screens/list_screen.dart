@@ -22,6 +22,7 @@ class _ListScreenState extends State<ListScreen> {
   int _pageNumber = 0;
   bool _isFetching = false;
   bool _hasUserLeft = true;
+  bool _hasFilter = false;
   final ScrollController _scrollController = ScrollController();
 
   @override
@@ -38,7 +39,8 @@ class _ListScreenState extends State<ListScreen> {
       if (_scrollController.position.pixels ==
               _scrollController.position.maxScrollExtent &&
           _hasUserLeft == true &&
-          _isFetching == false) {
+          _isFetching == false &&
+          _hasFilter == false) {
         _fetchData();
       }
     });
@@ -68,23 +70,7 @@ class _ListScreenState extends State<ListScreen> {
             child: TextField(
               autofocus: false,
               onChanged: (value) {
-                if (value == '') {
-                  setState(() {
-                    _userListFiltered = _userList;
-                  });
-                } else {
-                  List<User> filteredUser = _userList
-                      .where((user) =>
-                          user.city.contains(value) ||
-                          user.country.contains(value) ||
-                          user.firstName.contains(value) ||
-                          user.lastName.contains(value) ||
-                          user.crime.contains(value))
-                      .toList();
-                  setState(() {
-                    _userListFiltered = filteredUser;
-                  });
-                }
+                _onSearch(value);
               },
               decoration: InputDecoration(
                 border: OutlineInputBorder(),
@@ -120,6 +106,28 @@ class _ListScreenState extends State<ListScreen> {
         ],
       ),
     );
+  }
+
+  void _onSearch(value) {
+    if (value == '') {
+      setState(() {
+        _userListFiltered = _userList;
+        _hasFilter = false;
+      });
+    } else {
+      List<User> filteredUser = _userList
+          .where((user) =>
+              user.city.contains(value) ||
+              user.country.contains(value) ||
+              user.firstName.contains(value) ||
+              user.lastName.contains(value) ||
+              user.crime.contains(value))
+          .toList();
+      setState(() {
+        _userListFiltered = filteredUser;
+        _hasFilter = true;
+      });
+    }
   }
 
   Widget listStatus() {
