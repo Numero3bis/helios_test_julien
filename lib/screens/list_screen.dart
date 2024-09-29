@@ -46,7 +46,13 @@ class _ListScreenState extends State<ListScreen> {
     return SafeArea(
       child: Column(
         children: [
-          Text('This is a list'),
+          Container(
+              width: MediaQuery.of(context).size.width,
+              color: const Color.fromARGB(255, 2, 13, 44),
+              child: const Text('FBI watch list',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                      color: Color.fromARGB(250, 250, 235, 21), fontSize: 50))),
           Expanded(
             child: ListView.builder(
                 controller: _scrollController,
